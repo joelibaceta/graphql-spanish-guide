@@ -1,9 +1,0 @@
-language: ruby
-rvm:
-- 2.5
-branches:
-  only:
-  - master
-script:
-  - script/cibuild
-sudo: false
