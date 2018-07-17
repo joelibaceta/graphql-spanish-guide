@@ -5,5 +5,5 @@ branches:
   only:
   - master
 script:
-  - cript/cibuild
+  - script/cibuild
 sudo: false
