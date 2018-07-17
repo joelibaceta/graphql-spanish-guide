@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/joelibaceta/minima.git
-  revision: ff121c92fca18f03afce5d37e206e7fe9395774a
+  revision: 7348600cb7d9fec7288bc97b5c6708c0e11a3c07
   specs:
     minima (2.5.0)
       jekyll (~> 3.5)
@@ -38,6 +38,8 @@ GEM
       safe_yaml (~> 1.0)
     jekyll-feed (0.10.0)
       jekyll (~> 3.3)
+    jekyll-relative-links (0.5.3)
+      jekyll (~> 3.3)
     jekyll-sass-converter (1.5.2)
       sass (~> 3.4)
     jekyll-seo-tag (2.5.0)
@@ -72,6 +74,7 @@ PLATFORMS
 DEPENDENCIES
   bundler
   jekyll (~> 3.8.3)
+  jekyll-relative-links
   minima!
   tzinfo-data
 

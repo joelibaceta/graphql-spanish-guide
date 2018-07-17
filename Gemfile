@@ -3,6 +3,7 @@ source "https://rubygems.org"
 gem "bundler"
 
 gem "jekyll", "~> 3.8.3"
+gem 'jekyll-relative-links'
  
 gem "minima", git: "https://github.com/joelibaceta/minima.git"
 
