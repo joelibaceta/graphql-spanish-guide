@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/joelibaceta/minima.git
-  revision: e5ddc16711ae950eae76c71a867b5898da6364a4
+  revision: ff121c92fca18f03afce5d37e206e7fe9395774a
   specs:
     minima (2.5.0)
       jekyll (~> 3.5)
