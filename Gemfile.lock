@@ -1,5 +1,5 @@
 GIT
-  remote: git@github.com:joelibaceta/minima.git
+  remote: https://github.com/joelibaceta/minima.git
   revision: 491a22f75a9480c86c8d5aebea624f0cee8bc8d3
   specs:
     minima (2.5.0)
@@ -70,6 +70,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bundler
   jekyll (~> 3.8.3)
   minima!
   tzinfo-data
