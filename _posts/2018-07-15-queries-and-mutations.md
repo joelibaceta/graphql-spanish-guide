@@ -325,3 +325,43 @@ Resultado
   }
 }
 ```
+## Nombre de Operacion
+
+Hasta ahora, hemos estado usando una sintaxis abreviada donde omitimos la palabra clave `query` y el nombre de la consulta, pero en aplicaciones de producción es útil usarlas para hacer que nuestro código sea menos ambiguo.
+
+Aquí hay un ejemplo que incluye la palabra clave `query` como _tipo de operación_ y `HeroNameAndFriends` como nombre de operación:
+
+```graphql
+query HeroNameAndFriends {
+  hero {
+    name
+    friends {
+      name
+    }
+  }
+}
+```
+Resultado
+```json
+{
+  "data": {
+    "hero": {
+      "name": "R2-D2",
+      "friends": [
+        {
+          "name": "Luke Skywalker"
+        },
+        {
+          "name": "Han Solo"
+        },
+        {
+          "name": "Leia Organa"
+        }
+      ]
+    }
+  }
+}
+```
+El _tipo de operación_ es cualquier consulta, mutación o suscripción y describe qué tipo de operación pretende realizar. El tipo de operación es obligatorio a menos que esté usando la sintaxis abreviada de la consulta, en cuyo caso no puede proporcionar un nombre o definicion de variables.
+
+El nombre de la operación es un nombre significativo y explícito para la operación. Solo se requiere en documentos de operaciones múltiples, pero se recomienda su uso porque es muy útil para la depuración y el registro del lado del servidor. Cuando algo sale mal, es más fácil identificar una consulta en su código, registros de red o en su servidor GraphQL por nombre en lugar de intentar descifrar el contenido. Piense en esto como el nombre de una función en su lenguaje de programación favorito. Por ejemplo, en JavaScript podemos trabajar fácilmente solo con funciones anónimas, pero cuando asignamos un nombre a una función, es más fácil rastrearlo, depurar nuestro código y registrar cuando se llama. De la misma manera, los nombres de consulta y mutación de GraphQL, junto con los nombres de los fragmentos, pueden ser una herramienta útil de depuración en el lado del servidor para identificar diferentes solicitudes de GraphQL.
