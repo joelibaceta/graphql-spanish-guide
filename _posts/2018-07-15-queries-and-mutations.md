@@ -142,3 +142,32 @@ Respuesta
 Los argumentos puede ser de muchos tipos distintos. En el ejemplo anterior nosotros usamos un tipo `Enumeration` el cual representa un numero finito de opciones (En este caso, unidades de distancia `METER` o `FOOT`).
 
 [Leer mas sobre el esquemas y tipos en GraphQL aqui](https://joelibaceta.github.io/graphql-guide-spanish/aprender/schemas-and-types)
+
+## Alias
+
+Si tienes una vista aguda, puedes haber notado que los campos del objeto resultado coinciden con el nombre del campo en la consulta pero no incluyen argumentos, por lo que no puedes consultar directamente el mismo campo con diferentes argumentos. Es por este motivo que se necesitan alias - Estos te permiten renombrar un campo del resultado.
+
+```graphql
+{
+  empireHero: hero(episode: EMPIRE) {
+    name
+  }
+  jediHero: hero(episode: JEDI) {
+    name
+  }
+}
+```
+Resultado
+```json
+{
+  "data": {
+    "empireHero": {
+      "name": "Luke Skywalker"
+    },
+    "jediHero": {
+      "name": "R2-D2"
+    }
+  }
+}
+```
+En el ejemplo anterior, los dos campos `hero` podrian tener conflictos, pero como podemos asignar diferentes nombres (alias) y obtenemos ambos resultados en una misma solciitud.
