@@ -94,3 +94,51 @@ Respuesta
 }
 ```
 Note que en este ejemplo el campo `friends` retorna un arreglo de elementos. Las consultas GraphQL tienen el mismo aspecto tanto para elementos individuales o una lista de elementos. Sin embargo sabemos que resultado esperar basados en lo que indica el esquema.
+
+## Argumentos
+
+Si lo unico que pudiesemos hacer fuese consultar por objetos y campos, GraphQL ya seria un lenguaje muy util para obtener datos. Pero cuando le agremas la posibilidad de usar argumentos a los campos, las cosas se ponen mas interesantes.
+
+```graphql
+{
+  human(id: "1000") {
+    name
+    height
+  }
+}
+```
+Resultado
+```json
+{
+  "data": {
+    "human": {
+      "name": "Luke Skywalker",
+      "height": 1.72
+    }
+  }
+}
+```
+En un sistema como REST, solo puedes pasar un unico conjunto de argumentos: los parametros de consulta y los segmentos de url en la solicitud, pero en GraphQL, cada campo y objeto anidado puede tener su propio conjunto de argumentos, haciendo GraphQL un reemplazo completo para consultas multiples a APIs para la obtencion de informacion, Incluso puedes pasar argumentos en campos escalares para realizar transformaciones de datos en el servidor en lugar de realizarlo en cada cliente por separado. 
+
+```graphql
+{
+  human(id: "1000") {
+    name
+    height(unit: FOOT)
+  }
+}
+```
+Respuesta
+```json
+{
+  "data": {
+    "human": {
+      "name": "Luke Skywalker",
+      "height": 5.6430448
+    }
+  }
+}
+```
+Los argumentos puede ser de muchos tipos distintos. En el ejemplo anterior nosotros usamos un tipo `Enumeration` el cual representa un numero finito de opciones (En este caso, unidades de distancia `METER` o `FOOT`).
+
+[Leer mas sobre el esquemas y tipos en GraphQL aqui](https://joelibaceta.github.io/graphql-guide-spanish/aprender/schemas-and-types)
