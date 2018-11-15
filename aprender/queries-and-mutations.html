@@ -337,6 +337,44 @@
   }
 }
 </code></pre></div></div>
+<h2 id="nombre-de-operacion">Nombre de Operacion</h2>
+
+<p>Hasta ahora, hemos estado usando una sintaxis abreviada donde omitimos la palabra clave <code class="highlighter-rouge">query</code> y el nombre de la consulta, pero en aplicaciones de producción es útil usarlas para hacer que nuestro código sea menos ambiguo.</p>
+
+<p>Aquí hay un ejemplo que incluye la palabra clave <code class="highlighter-rouge">query</code> como <em>tipo de operación</em> y <code class="highlighter-rouge">HeroNameAndFriends</code> como nombre de operación:</p>
+
+<div class="language-graphql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">query</span><span class="w"> </span><span class="n">HeroNameAndFriends</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">hero</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">name</span><span class="w">
+    </span><span class="n">friends</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">name</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Resultado</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"hero"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"R2-D2"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"friends"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Luke Skywalker"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Han Solo"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Leia Organa"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>El <em>tipo de operación</em> es cualquier consulta, mutación o suscripción y describe qué tipo de operación pretende realizar. El tipo de operación es obligatorio a menos que esté usando la sintaxis abreviada de la consulta, en cuyo caso no puede proporcionar un nombre o definicion de variables.</p>
+
+<p>El nombre de la operación es un nombre significativo y explícito para la operación. Solo se requiere en documentos de operaciones múltiples, pero se recomienda su uso porque es muy útil para la depuración y el registro del lado del servidor. Cuando algo sale mal, es más fácil identificar una consulta en su código, registros de red o en su servidor GraphQL por nombre en lugar de intentar descifrar el contenido. Piense en esto como el nombre de una función en su lenguaje de programación favorito. Por ejemplo, en JavaScript podemos trabajar fácilmente solo con funciones anónimas, pero cuando asignamos un nombre a una función, es más fácil rastrearlo, depurar nuestro código y registrar cuando se llama. De la misma manera, los nombres de consulta y mutación de GraphQL, junto con los nombres de los fragmentos, pueden ser una herramienta útil de depuración en el lado del servidor para identificar diferentes solicitudes de GraphQL.</p>
 
   </div><a class="u-url" href="/graphql-guide-spanish/aprender/queries-and-mutations" hidden></a>
 </article>
