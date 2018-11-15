@@ -171,3 +171,157 @@ Resultado
 }
 ```
 En el ejemplo anterior, los dos campos `hero` podrian tener conflictos, pero como podemos asignar diferentes nombres (alias) y obtenemos ambos resultados en una misma solciitud.
+
+## Fragmentos
+
+Digamos que tenemos una pagina relativamente completa en tu aplicacion, la cual nos permite ver a los dos heroes lado a lado junto con sus amigos, puedes imaginar que una consulta de este tipo podria complicarse rapidamente, por que tendriamos que repetir los campos al menos una vez, uno para cada lado de la comparación.
+
+Es por eso que GraphQL incluye unidades reutilizables llamadas fragmentos. Los fragmentos permiten construir conjuntos de campos y luego incluirlos en las consultas donde sea necesario. Aquí hay un ejemplo de cómo podría resolver la situación anterior utilizando fragmentos:
+
+```graphql
+{
+  leftComparison: hero(episode: EMPIRE) {
+    ...comparisonFields
+  }
+  rightComparison: hero(episode: JEDI) {
+    ...comparisonFields
+  }
+}
+
+fragment comparisonFields on Character {
+  name
+  appearsIn
+  friends {
+    name
+  }
+}
+```
+Resultado
+```json
+{
+  "data": {
+    "leftComparison": {
+      "name": "Luke Skywalker",
+      "appearsIn": [
+        "NEWHOPE",
+        "EMPIRE",
+        "JEDI"
+      ],
+      "friends": [
+        {
+          "name": "Han Solo"
+        },
+        {
+          "name": "Leia Organa"
+        },
+        {
+          "name": "C-3PO"
+        },
+        {
+          "name": "R2-D2"
+        }
+      ]
+    },
+    "rightComparison": {
+      "name": "R2-D2",
+      "appearsIn": [
+        "NEWHOPE",
+        "EMPIRE",
+        "JEDI"
+      ],
+      "friends": [
+        {
+          "name": "Luke Skywalker"
+        },
+        {
+          "name": "Han Solo"
+        },
+        {
+          "name": "Leia Organa"
+        }
+      ]
+    }
+  }
+}
+```
+Puedes ver como la consulta anterior podria ser bastante reptitiva si los campos fuesen repetidos. El concepto de fragmentos es frecuentemente usado para separar requerimeintos de datos de aplicaciones complejas, en partes mas pequeñas, especialmente cuando necesita combinar muchos componentes de la interfaz de usuario con diferentes fragmentos en una consulta de datos.
+
+### Usando variables en los fragmentos
+
+Es posible que los fragmentos accedan a variables declaradas en la consulta o mutación. [Ver variables.](https://joelibaceta.github.io/graphql-guide-spanish/aprender/queries-and-mutations)
+
+```graphql
+query HeroComparison($first: Int = 3) {
+  leftComparison: hero(episode: EMPIRE) {
+    ...comparisonFields
+  }
+  rightComparison: hero(episode: JEDI) {
+    ...comparisonFields
+  }
+}
+
+fragment comparisonFields on Character {
+  name
+  friendsConnection(first: $first) {
+    totalCount
+    edges {
+      node {
+        name
+      }
+    }
+  }
+}
+```
+Resultado
+```
+{
+  "data": {
+    "leftComparison": {
+      "name": "Luke Skywalker",
+      "friendsConnection": {
+        "totalCount": 4,
+        "edges": [
+          {
+            "node": {
+              "name": "Han Solo"
+            }
+          },
+          {
+            "node": {
+              "name": "Leia Organa"
+            }
+          },
+          {
+            "node": {
+              "name": "C-3PO"
+            }
+          }
+        ]
+      }
+    },
+    "rightComparison": {
+      "name": "R2-D2",
+      "friendsConnection": {
+        "totalCount": 3,
+        "edges": [
+          {
+            "node": {
+              "name": "Luke Skywalker"
+            }
+          },
+          {
+            "node": {
+              "name": "Han Solo"
+            }
+          },
+          {
+            "node": {
+              "name": "Leia Organa"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+```
