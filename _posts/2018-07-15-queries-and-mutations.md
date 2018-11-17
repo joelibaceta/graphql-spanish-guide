@@ -561,3 +561,92 @@ Una mutación puede contener varios campos, al igual que una consulta. Hay una d
 **Mientras que los campos de consulta se ejecutan en paralelo, los campos de mutación se ejecutan en serie, uno tras otro.**
 
 Esto significa que si enviamos dos mutaciones `incrementCredits` en una solicitud, se garantiza que la primera finalice antes de que comience la segunda, asegurando que no terminemos con una de carrera entre ellas.
+
+## Fragmentos en linea
+
+Al igual que muchos otros sistemas de tipos, los esquemas GraphQL incluyen la capacidad de definir interfaces y tipos de unión. [Aprende sobre ellos en la guía de esquemas.](https://joelibaceta.github.io/graphql-guide-spanish/aprender/schemas-and-types)
+
+Si está consultando un campo que devuelve una interfaz o un tipo de unión, deberá utilizar un _fragmento en línea_ para acceder a los datos en el tipo concreto subyacente. Es más fácil de ver con un ejemplo:
+
+```graphql
+query HeroForEpisode($ep: Episode!) {
+  hero(episode: $ep) {
+    name
+    ... on Droid {
+      primaryFunction
+    }
+    ... on Human {
+      height
+    }
+  }
+}
+```
+Variables
+```json
+{
+  "ep": "JEDI"
+}
+```
+Resultado
+```json
+{
+  "data": {
+    "hero": {
+      "name": "R2-D2",
+      "primaryFunction": "Astromech"
+    }
+  }
+}
+```
+En esta consulta, el campo `hero` devuelve el tipo de `Character`, que puede ser un humano (`Human`) o un androide (`Droid`) según el argumento `episodio`. En la selección directa, solo puede solicitar campos que existen en la interfaz `Character`, como el nombre (`name`).
+
+Para solicitar un campo en el tipo concreto, debe utilizar un _fragmento en línea_ con una condición de tipo. Debido a que el primer fragmento está etiquetado como `... on Droid`, el campo `primaryFunction` solo se ejecutará si el Personaje (`Character`) devuelto por el héroe (`hero`) es del tipo androide (`Droid`). Del mismo modo para el campo de `height` para el tipo `Human`.
+
+Los fragmentos con nombre también se pueden usar de la misma manera, ya que un fragmento con nombre siempre tiene un tipo adjunto.
+
+### Meta campos
+
+Dado que hay algunas situaciones en las que no sabe qué tipo se recibirá del servicio GraphQL, se necesita alguna forma de determinar cómo manejar esos datos en el cliente. GraphQL le permite solicitar el campo `__typename`, un meta campo, en cualquier punto de una consulta para obtener el nombre del tipo del objeto en ese punto.
+
+```graphql
+{
+  search(text: "an") {
+    __typename
+    ... on Human {
+      name
+    }
+    ... on Droid {
+      name
+    }
+    ... on Starship {
+      name
+    }
+  }
+}
+```
+Resultado
+```json
+{
+  "data": {
+    "search": [
+      {
+        "__typename": "Human",
+        "name": "Han Solo"
+      },
+      {
+        "__typename": "Human",
+        "name": "Leia Organa"
+      },
+      {
+        "__typename": "Starship",
+        "name": "TIE Advanced x1"
+      }
+    ]
+  }
+}
+```
+En la consulta anterior, la búsqueda devuelve un tipo de unión que puede ser una de las tres opciones. Sería imposible distinguir los diferentes tipos del cliente sin el campo `__typename`.
+
+Los servicios GraphQL proporcionan algunos campos de metadatos, el resto de los cuales se utilizan para exponer el [sistema de introspección](https://joelibaceta.github.io/graphql-guide-spanish/aprender/introspeccion).
+
+> [Seguir leyendo -> Esquemas y Tipos ](https://joelibaceta.github.io/graphql-guide-spanish/aprender/schemas-and-types)
