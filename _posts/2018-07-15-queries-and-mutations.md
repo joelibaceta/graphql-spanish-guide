@@ -512,3 +512,52 @@ Necesitábamos usar una nueva característica en GraphQL llamada directiva. Una 
 - `@skip(if: Boolean)` Omita este campo si el argumento es `true`.
 
 Las directivas pueden ser útiles para salir de situaciones en las que de otro modo necesitaría realizar manipular las cadenas para agregar y eliminar campos en su consulta. Las implementaciones de servidor también pueden agregar características experimentales al definir directivas completamente nuevas.
+
+## Mutaciones
+
+La mayoría de las discusiones sobre GraphQL se centran en la obtención de datos, pero cualquier plataforma de datos completa también necesita una forma de modificar los datos del lado del servidor.
+
+En REST, cualquier solicitud puede terminar causando algunos efectos secundarios de lado del servidor, pero por convención se sugiere que no se utilicen las solicitudes GET para modificar los datos. GraphQL es similar: técnicamente cualquier consulta podría implementarse para provocar una escritura de datos. Sin embargo, es útil establecer una convención de que todas las operaciones que causan escrituras deben enviarse explícitamente a través de una mutación.
+
+Al igual que en las consultas, si el campo de mutación devuelve un tipo objeto, puede consultar por campos anidados. Esto puede ser útil para obtener el nuevo estado de un objeto después de una actualización. Veamos un ejemplo simple de mutación:
+
+```graphql
+mutation CreateReviewForEpisode($ep: Episode!, $review: ReviewInput!) {
+  createReview(episode: $ep, review: $review) {
+    stars
+    commentary
+  }
+}
+```
+Variables
+```json
+{
+  "ep": "JEDI",
+  "review": {
+    "stars": 5,
+    "commentary": "This is a great movie!"
+  }
+}
+```
+Resultado
+```json
+{
+  "data": {
+    "createReview": {
+      "stars": 5,
+      "commentary": "This is a great movie!"
+    }
+  }
+}
+```
+Observe cómo el campo `createReview` devuelve las estrellas (`stars`) y los comentarios (`commentary`) de la revisión (`review`) recién creada. Esto es especialmente útil al mutar datos existentes, por ejemplo, al incrementar un campo, ya que podemos mutar y consultar el nuevo valor del campo con una sola solicitud.
+
+También puede notar que, en este ejemplo, la variable `review` que pasamos no es un escalar. Es un tipo de objeto de entrada, un tipo especial de objeto que se puede pasar como un argumento. Obtenga más información sobre los tipos de entrada en la página Esquema.
+
+### Múltiples campos en las mutaciones
+
+Una mutación puede contener varios campos, al igual que una consulta. Hay una diferencia importante entre consultas y mutaciones, aparte del nombre:
+
+**Mientras que los campos de consulta se ejecutan en paralelo, los campos de mutación se ejecutan en serie, uno tras otro.**
+
+Esto significa que si enviamos dos mutaciones `incrementCredits` en una solicitud, se garantiza que la primera finalice antes de que comience la segunda, asegurando que no terminemos con una de carrera entre ellas.
