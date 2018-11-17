@@ -453,6 +453,71 @@
 
 <p>Cuando se asignan valores predeterminados para todas las variables, se puede llamar a la consulta sin pasar ninguna variable. Si se pasa alguna variable como parte del diccionario de variables, estas sobrescribiran los valores predeterminados.</p>
 
+<h2 id="directivas">Directivas</h2>
+
+<p>Discutimos anteriormente cómo las variables nos permiten evitar la interpolación de cadenas de forma manual para construir consultas dinámicas. Pasar variables en argumentos resuelve una buena cantidad de problemas, pero también es posible que necesitemos una forma de cambiar dinámicamente la estructura y la forma de nuestras consultas utilizando variables. Por ejemplo, podemos imaginar un componente UI que tiene una vista resumida y detallada, donde una incluye más campos que el otro.</p>
+
+<p>Construyamos una consulta para este componente:</p>
+
+<div class="language-graphql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">query</span><span class="w"> </span><span class="n">Hero</span><span class="p">(</span><span class="nv">$episode</span><span class="p">:</span><span class="w"> </span><span class="n">Episode</span><span class="p">,</span><span class="w"> </span><span class="nv">$withFriends</span><span class="p">:</span><span class="w"> </span><span class="nb">Boolean</span><span class="p">!)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">hero</span><span class="p">(</span><span class="n">episode</span><span class="p">:</span><span class="w"> </span><span class="nv">$episode</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">name</span><span class="w">
+    </span><span class="n">friends</span><span class="w"> </span><span class="k">@include</span><span class="p">(</span><span class="n">if</span><span class="p">:</span><span class="w"> </span><span class="nv">$withFriends</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">name</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Variables</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"episode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JEDI"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"withFriends"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Resultado</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"hero"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"R2-D2"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Pasando <code class="highlighter-rouge">true</code> para la variable <code class="highlighter-rouge">withFriends</code></p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"episode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JEDI"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"withFriends"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Resultado</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"hero"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"R2-D2"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"friends"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Luke Skywalker"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Han Solo"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Leia Organa"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Necesitábamos usar una nueva característica en GraphQL llamada directiva. Una directiva puede ser adjuntada a un campo o fragmento y puede afectar la ejecución de la consulta de la forma que el servidor desee. La especificación básica de GraphQL incluye exactamente dos directivas, que deben ser compatibles con cualquier implementación de servidor GraphQL:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">@include(if: Boolean)</code> Solo incluya este campo en el resultado si el argumento es <code class="highlighter-rouge">true</code>.</li>
+  <li><code class="highlighter-rouge">@skip(if: Boolean)</code> Omita este campo si el argumento es <code class="highlighter-rouge">true</code>.</li>
+</ul>
+
+<p>Las directivas pueden ser útiles para salir de situaciones en las que de otro modo necesitaría realizar manipular las cadenas para agregar y eliminar campos en su consulta. Las implementaciones de servidor también pueden agregar características experimentales al definir directivas completamente nuevas.</p>
+
   </div><a class="u-url" href="/graphql-guide-spanish/aprender/queries-and-mutations" hidden></a>
 </article>
 
