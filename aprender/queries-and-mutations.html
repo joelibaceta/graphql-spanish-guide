@@ -518,6 +518,52 @@
 
 <p>Las directivas pueden ser útiles para salir de situaciones en las que de otro modo necesitaría realizar manipular las cadenas para agregar y eliminar campos en su consulta. Las implementaciones de servidor también pueden agregar características experimentales al definir directivas completamente nuevas.</p>
 
+<h2 id="mutaciones">Mutaciones</h2>
+
+<p>La mayoría de las discusiones sobre GraphQL se centran en la obtención de datos, pero cualquier plataforma de datos completa también necesita una forma de modificar los datos del lado del servidor.</p>
+
+<p>En REST, cualquier solicitud puede terminar causando algunos efectos secundarios de lado del servidor, pero por convención se sugiere que no se utilicen las solicitudes GET para modificar los datos. GraphQL es similar: técnicamente cualquier consulta podría implementarse para provocar una escritura de datos. Sin embargo, es útil establecer una convención de que todas las operaciones que causan escrituras deben enviarse explícitamente a través de una mutación.</p>
+
+<p>Al igual que en las consultas, si el campo de mutación devuelve un tipo objeto, puede consultar por campos anidados. Esto puede ser útil para obtener el nuevo estado de un objeto después de una actualización. Veamos un ejemplo simple de mutación:</p>
+
+<div class="language-graphql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">mutation</span><span class="w"> </span><span class="n">CreateReviewForEpisode</span><span class="p">(</span><span class="nv">$ep</span><span class="p">:</span><span class="w"> </span><span class="n">Episode</span><span class="p">!,</span><span class="w"> </span><span class="nv">$review</span><span class="p">:</span><span class="w"> </span><span class="n">ReviewInput</span><span class="p">!)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">createReview</span><span class="p">(</span><span class="n">episode</span><span class="p">:</span><span class="w"> </span><span class="nv">$ep</span><span class="p">,</span><span class="w"> </span><span class="n">review</span><span class="p">:</span><span class="w"> </span><span class="nv">$review</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">stars</span><span class="w">
+    </span><span class="n">commentary</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Variables</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"ep"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JEDI"</span><span class="p">,</span><span class="w">
+  </span><span class="s2">"review"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"stars"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"commentary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This is a great movie!"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Resultado</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"createReview"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"stars"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"commentary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This is a great movie!"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Observe cómo el campo <code class="highlighter-rouge">createReview</code> devuelve las estrellas (<code class="highlighter-rouge">stars</code>) y los comentarios (<code class="highlighter-rouge">commentary</code>) de la revisión (<code class="highlighter-rouge">review</code>) recién creada. Esto es especialmente útil al mutar datos existentes, por ejemplo, al incrementar un campo, ya que podemos mutar y consultar el nuevo valor del campo con una sola solicitud.</p>
+
+<p>También puede notar que, en este ejemplo, la variable <code class="highlighter-rouge">review</code> que pasamos no es un escalar. Es un tipo de objeto de entrada, un tipo especial de objeto que se puede pasar como un argumento. Obtenga más información sobre los tipos de entrada en la página Esquema.</p>
+
+<h3 id="múltiples-campos-en-las-mutaciones">Múltiples campos en las mutaciones</h3>
+
+<p>Una mutación puede contener varios campos, al igual que una consulta. Hay una diferencia importante entre consultas y mutaciones, aparte del nombre:</p>
+
+<p><strong>Mientras que los campos de consulta se ejecutan en paralelo, los campos de mutación se ejecutan en serie, uno tras otro.</strong></p>
+
+<p>Esto significa que si enviamos dos mutaciones <code class="highlighter-rouge">incrementCredits</code> en una solicitud, se garantiza que la primera finalice antes de que comience la segunda, asegurando que no terminemos con una de carrera entre ellas.</p>
+
   </div><a class="u-url" href="/graphql-guide-spanish/aprender/queries-and-mutations" hidden></a>
 </article>
 
