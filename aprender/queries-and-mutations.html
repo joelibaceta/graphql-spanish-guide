@@ -376,6 +376,83 @@
 
 <p>El nombre de la operación es un nombre significativo y explícito para la operación. Solo se requiere en documentos de operaciones múltiples, pero se recomienda su uso porque es muy útil para la depuración y el registro del lado del servidor. Cuando algo sale mal, es más fácil identificar una consulta en su código, registros de red o en su servidor GraphQL por nombre en lugar de intentar descifrar el contenido. Piense en esto como el nombre de una función en su lenguaje de programación favorito. Por ejemplo, en JavaScript podemos trabajar fácilmente solo con funciones anónimas, pero cuando asignamos un nombre a una función, es más fácil rastrearlo, depurar nuestro código y registrar cuando se llama. De la misma manera, los nombres de consulta y mutación de GraphQL, junto con los nombres de los fragmentos, pueden ser una herramienta útil de depuración en el lado del servidor para identificar diferentes solicitudes de GraphQL.</p>
 
+<h2 id="variables">Variables</h2>
+
+<p>Hasta ahora, hemos estado escribiendo todos nuestros argumentos dentro de la consulta. Pero en la mayoría de las aplicaciones, los argumentos de los campos serán dinámicos: por ejemplo, podría haber un menú desplegable que te permita seleccionar el episodio de Star Wars en el que estás interesado, un campo de búsqueda o un conjunto de filtros.</p>
+
+<p>No sería una buena idea pasar estos argumentos dinámicos directamente en la consulta, porque entonces nuestro código del lado del cliente necesitaría manipular dinámicamente la  consulta en tiempo de ejecución y serializarla en un formato específico de GraphQL. En su lugar, GraphQL tiene una forma de <em>primera clase</em> para factorizar los valores dinámicos de la consulta y pasarlos como un diccionario separado. Estos valores se denominan variables.</p>
+
+<p>Cuando comenzamos a trabajar con variables, necesitamos hacer tres cosas:</p>
+
+<ol>
+  <li>Reemplace el valor estático en la consulta con $nombreDeVariable</li>
+  <li>Declare $nombreDeVariable como una de las variables aceptadas por la consulta</li>
+  <li>Pasar <code class="highlighter-rouge">nombreDeVariable: valor</code> en el diccionario de variables separado, especifico del transporte (Normalmente JSON)</li>
+</ol>
+
+<p>Asi se veria todo junto:</p>
+<div class="language-graphql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">query</span><span class="w"> </span><span class="n">HeroNameAndFriends</span><span class="p">(</span><span class="nv">$episode</span><span class="p">:</span><span class="w"> </span><span class="n">Episode</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">hero</span><span class="p">(</span><span class="n">episode</span><span class="p">:</span><span class="w"> </span><span class="nv">$episode</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">name</span><span class="w">
+    </span><span class="n">friends</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">name</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Variables</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"episode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JEDI"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Resultado</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"hero"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"R2-D2"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"friends"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Luke Skywalker"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Han Solo"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Leia Organa"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Ahora, en nuestro código del cliente, podemos pasar una variable diferente en lugar de tener que construir una consulta completamente nueva. En general, esta es también una buena práctica para denotar qué argumentos de nuestra consulta se espera que sean dinámicos: nunca deberíamos hacer interpolación de cadenas para construir consultas a partir de valores proporcionados por el usuario.</p>
+
+<h3 id="variable-definitions">Variable definitions</h3>
+
+<p>La definicion de variables es la parte que se ve como <code class="highlighter-rouge">($episode: Episode)</code> en la consulta anterior. Funciona igual que las definiciones de argumentos para una función en un lenguaje escrito. Enumera todas las variables, prefijadas por el simbolo <code class="highlighter-rouge">$</code>, seguidas por su tipo, en este caso <code class="highlighter-rouge">Episode</code>.</p>
+
+<p>Todas las variables declaradas deben ser escalares, enumeraciones o tipos de objetos de entrada. Entonces, si quiere pasar un objeto complejo a un campo, necesita saber qué tipo de entrada coincide con el servidor. Obtenga más información sobre los tipos de objetos de entrada en la página Esquema.</p>
+
+<p>La definicion de variables puede ser opcional o requerido. En el caso anterior, ya que no hay un <code class="highlighter-rouge">!</code> Junto al tipo Episodio, es opcional. Pero si el campo al que le está pasando la variable requiere un argumento no nulo, la variable también debe ser requerida.</p>
+
+<p>Para obtener más información sobre la sintaxis de estas definiciones de variables, es útil aprender el lenguaje del esquema GraphQL. El lenguaje del esquema se explica en detalle en la página Esquema.</p>
+
+<h3 id="variables-por-defecto">Variables por defecto</h3>
+
+<p>Tambien se pueden asignar valores predeterminados a las variables en la consulta agregando el valor después de la declaración de tipo.</p>
+
+<div class="language-graphql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">query</span><span class="w"> </span><span class="n">HeroNameAndFriends</span><span class="p">(</span><span class="nv">$episode</span><span class="p">:</span><span class="w"> </span><span class="n">Episode</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">JEDI</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">hero</span><span class="p">(</span><span class="n">episode</span><span class="p">:</span><span class="w"> </span><span class="nv">$episode</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">name</span><span class="w">
+    </span><span class="n">friends</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">name</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Cuando se asignan valores predeterminados para todas las variables, se puede llamar a la consulta sin pasar ninguna variable. Si se pasa alguna variable como parte del diccionario de variables, estas sobrescribiran los valores predeterminados.</p>
+
   </div><a class="u-url" href="/graphql-guide-spanish/aprender/queries-and-mutations" hidden></a>
 </article>
 
