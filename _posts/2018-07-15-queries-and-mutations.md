@@ -645,8 +645,11 @@ Resultado
   }
 }
 ```
+
 En la consulta anterior, la búsqueda devuelve un tipo de unión que puede ser una de las tres opciones. Sería imposible distinguir los diferentes tipos del cliente sin el campo `__typename`.
 
 Los servicios GraphQL proporcionan algunos campos de metadatos, el resto de los cuales se utilizan para exponer el [sistema de introspección](https://joelibaceta.github.io/graphql-guide-spanish/aprender/introspeccion).
+
+<br/>
 
 > [Seguir leyendo -> Esquemas y Tipos ](https://joelibaceta.github.io/graphql-guide-spanish/aprender/schemas-and-types)
