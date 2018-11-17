@@ -444,3 +444,71 @@ query HeroNameAndFriends($episode: Episode = JEDI) {
 ```
 
 Cuando se asignan valores predeterminados para todas las variables, se puede llamar a la consulta sin pasar ninguna variable. Si se pasa alguna variable como parte del diccionario de variables, estas sobrescribiran los valores predeterminados.
+
+## Directivas
+
+Discutimos anteriormente cómo las variables nos permiten evitar la interpolación de cadenas de forma manual para construir consultas dinámicas. Pasar variables en argumentos resuelve una buena cantidad de problemas, pero también es posible que necesitemos una forma de cambiar dinámicamente la estructura y la forma de nuestras consultas utilizando variables. Por ejemplo, podemos imaginar un componente UI que tiene una vista resumida y detallada, donde una incluye más campos que el otro.
+
+Construyamos una consulta para este componente:
+
+```graphql
+query Hero($episode: Episode, $withFriends: Boolean!) {
+  hero(episode: $episode) {
+    name
+    friends @include(if: $withFriends) {
+      name
+    }
+  }
+}
+```
+Variables
+```json
+{
+  "episode": "JEDI",
+  "withFriends": false
+}
+```
+Resultado
+```json
+{
+  "data": {
+    "hero": {
+      "name": "R2-D2"
+    }
+  }
+}
+```
+Pasando `true` para la variable `withFriends`
+```json
+{
+  "episode": "JEDI",
+  "withFriends": true
+}
+```
+Resultado
+```json
+{
+  "data": {
+    "hero": {
+      "name": "R2-D2",
+      "friends": [
+        {
+          "name": "Luke Skywalker"
+        },
+        {
+          "name": "Han Solo"
+        },
+        {
+          "name": "Leia Organa"
+        }
+      ]
+    }
+  }
+}
+```
+Necesitábamos usar una nueva característica en GraphQL llamada directiva. Una directiva puede ser adjuntada a un campo o fragmento y puede afectar la ejecución de la consulta de la forma que el servidor desee. La especificación básica de GraphQL incluye exactamente dos directivas, que deben ser compatibles con cualquier implementación de servidor GraphQL:
+
+- `@include(if: Boolean)` Solo incluya este campo en el resultado si el argumento es `true`.
+- `@skip(if: Boolean)` Omita este campo si el argumento es `true`.
+
+Las directivas pueden ser útiles para salir de situaciones en las que de otro modo necesitaría realizar manipular las cadenas para agregar y eliminar campos en su consulta. Las implementaciones de servidor también pueden agregar características experimentales al definir directivas completamente nuevas.
