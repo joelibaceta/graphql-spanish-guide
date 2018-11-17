@@ -56,7 +56,8 @@ Podria producir el resultado JSON:
 }
 ```
 
-Aprenda mas sobre GraphQL - El lenguaje de consulta, el sistema de tipos, como funciona el servicio GraphQL y cuales son las mejores practicas para usar GraphQL para resolver problemas comunes - in los articulos escritos en esta seccion.  
+Aprenda mas sobre GraphQL - El lenguaje de consulta, el sistema de tipos, como funciona el servicio GraphQL y cuales son las mejores practicas para usar GraphQL para resolver problemas comunes - in los articulos escritos en esta seccion. 
 
+<br/>
 
-[Seguir leyendo -> Consultas y Mutaciones ](queries-and-mutations.md)
+>[Seguir leyendo -> Consultas y Mutaciones ](queries-and-mutations.md)
