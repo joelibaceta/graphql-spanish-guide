@@ -365,3 +365,82 @@ Resultado
 El _tipo de operación_ es cualquier consulta, mutación o suscripción y describe qué tipo de operación pretende realizar. El tipo de operación es obligatorio a menos que esté usando la sintaxis abreviada de la consulta, en cuyo caso no puede proporcionar un nombre o definicion de variables.
 
 El nombre de la operación es un nombre significativo y explícito para la operación. Solo se requiere en documentos de operaciones múltiples, pero se recomienda su uso porque es muy útil para la depuración y el registro del lado del servidor. Cuando algo sale mal, es más fácil identificar una consulta en su código, registros de red o en su servidor GraphQL por nombre en lugar de intentar descifrar el contenido. Piense en esto como el nombre de una función en su lenguaje de programación favorito. Por ejemplo, en JavaScript podemos trabajar fácilmente solo con funciones anónimas, pero cuando asignamos un nombre a una función, es más fácil rastrearlo, depurar nuestro código y registrar cuando se llama. De la misma manera, los nombres de consulta y mutación de GraphQL, junto con los nombres de los fragmentos, pueden ser una herramienta útil de depuración en el lado del servidor para identificar diferentes solicitudes de GraphQL.
+
+## Variables
+
+Hasta ahora, hemos estado escribiendo todos nuestros argumentos dentro de la consulta. Pero en la mayoría de las aplicaciones, los argumentos de los campos serán dinámicos: por ejemplo, podría haber un menú desplegable que te permita seleccionar el episodio de Star Wars en el que estás interesado, un campo de búsqueda o un conjunto de filtros.
+
+No sería una buena idea pasar estos argumentos dinámicos directamente en la consulta, porque entonces nuestro código del lado del cliente necesitaría manipular dinámicamente la  consulta en tiempo de ejecución y serializarla en un formato específico de GraphQL. En su lugar, GraphQL tiene una forma de _primera clase_ para factorizar los valores dinámicos de la consulta y pasarlos como un diccionario separado. Estos valores se denominan variables.
+
+Cuando comenzamos a trabajar con variables, necesitamos hacer tres cosas:
+
+1. Reemplace el valor estático en la consulta con $nombreDeVariable
+2. Declare $nombreDeVariable como una de las variables aceptadas por la consulta
+3. Pasar `nombreDeVariable: valor` en el diccionario de variables separado, especifico del transporte (Normalmente JSON)
+
+Asi se veria todo junto:
+```graphql
+query HeroNameAndFriends($episode: Episode) {
+  hero(episode: $episode) {
+    name
+    friends {
+      name
+    }
+  }
+}
+```
+Variables
+```json
+{
+  "episode": "JEDI"
+}
+```
+Resultado
+```json
+{
+  "data": {
+    "hero": {
+      "name": "R2-D2",
+      "friends": [
+        {
+          "name": "Luke Skywalker"
+        },
+        {
+          "name": "Han Solo"
+        },
+        {
+          "name": "Leia Organa"
+        }
+      ]
+    }
+  }
+}
+```
+Ahora, en nuestro código del cliente, podemos pasar una variable diferente en lugar de tener que construir una consulta completamente nueva. En general, esta es también una buena práctica para denotar qué argumentos de nuestra consulta se espera que sean dinámicos: nunca deberíamos hacer interpolación de cadenas para construir consultas a partir de valores proporcionados por el usuario.
+
+### Variable definitions
+
+La definicion de variables es la parte que se ve como `($episode: Episode)` en la consulta anterior. Funciona igual que las definiciones de argumentos para una función en un lenguaje escrito. Enumera todas las variables, prefijadas por el simbolo `$`, seguidas por su tipo, en este caso `Episode`.
+
+Todas las variables declaradas deben ser escalares, enumeraciones o tipos de objetos de entrada. Entonces, si quiere pasar un objeto complejo a un campo, necesita saber qué tipo de entrada coincide con el servidor. Obtenga más información sobre los tipos de objetos de entrada en la página Esquema.
+
+La definicion de variables puede ser opcional o requerido. En el caso anterior, ya que no hay un `!` Junto al tipo Episodio, es opcional. Pero si el campo al que le está pasando la variable requiere un argumento no nulo, la variable también debe ser requerida.
+
+Para obtener más información sobre la sintaxis de estas definiciones de variables, es útil aprender el lenguaje del esquema GraphQL. El lenguaje del esquema se explica en detalle en la página Esquema.
+
+### Variables por defecto
+
+Tambien se pueden asignar valores predeterminados a las variables en la consulta agregando el valor después de la declaración de tipo.
+
+```graphql
+query HeroNameAndFriends($episode: Episode = JEDI) {
+  hero(episode: $episode) {
+    name
+    friends {
+      name
+    }
+  }
+}
+```
+
+Cuando se asignan valores predeterminados para todas las variables, se puede llamar a la consulta sin pasar ninguna variable. Si se pasa alguna variable como parte del diccionario de variables, estas sobrescribiran los valores predeterminados.
