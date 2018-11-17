@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="/graphql-guide-spanish/feed.xml" rel="self" type="application/atom+xml" /><link href="/graphql-guide-spanish/" rel="alternate" type="text/html" /><updated>2018-11-17T14:57:59+00:00</updated><id>/graphql-guide-spanish/</id><title type="html">GraphQL</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Introducción a GraphQL</title><link href="/graphql-guide-spanish/aprender/introduction" rel="alternate" type="text/html" title="Introducción a GraphQL" /><published>2018-07-16T00:00:00+00:00</published><updated>2018-07-16T00:00:00+00:00</updated><id>/graphql-guide-spanish/aprender/introduction</id><content type="html" xml:base="/graphql-guide-spanish/aprender/introduction">&lt;blockquote&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.3">Jekyll</generator><link href="/graphql-guide-spanish/feed.xml" rel="self" type="application/atom+xml" /><link href="/graphql-guide-spanish/" rel="alternate" type="text/html" /><updated>2018-11-17T15:01:54+00:00</updated><id>/graphql-guide-spanish/</id><title type="html">GraphQL</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Introducción a GraphQL</title><link href="/graphql-guide-spanish/aprender/introduction" rel="alternate" type="text/html" title="Introducción a GraphQL" /><published>2018-07-16T00:00:00+00:00</published><updated>2018-07-16T00:00:00+00:00</updated><id>/graphql-guide-spanish/aprender/introduction</id><content type="html" xml:base="/graphql-guide-spanish/aprender/introduction">&lt;blockquote&gt;
   &lt;p&gt;Aprenderas sobre GraphQL, como funciona y como usarlo en esta serie de articulos. ¿Buscas documentacion sobre como construir un Servicio GraphQL? Estas librerias te ayudaran a implementar GraphQL en &lt;a href=&quot;https://graphql.org/code/&quot;&gt;muchos diferentes lenguajes.&lt;/a&gt; Para un aprendizaje produndo con tutoriales praticos, visite el sitio &lt;a href=&quot;https://www.howtographql.com/&quot;&gt;How to GraphQL&lt;/a&gt;(En inglés)&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -48,6 +48,8 @@
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Aprenda mas sobre GraphQL - El lenguaje de consulta, el sistema de tipos, como funciona el servicio GraphQL y cuales son las mejores practicas para usar GraphQL para resolver problemas comunes - in los articulos escritos en esta seccion.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;a href=&quot;queries-and-mutations.md&quot;&gt;Seguir leyendo -&amp;gt; Consultas y Mutaciones &lt;/a&gt;&lt;/p&gt;
@@ -663,9 +665,12 @@
   &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;p&gt;En la consulta anterior, la búsqueda devuelve un tipo de unión que puede ser una de las tres opciones. Sería imposible distinguir los diferentes tipos del cliente sin el campo &lt;code class=&quot;highlighter-rouge&quot;&gt;__typename&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;Los servicios GraphQL proporcionan algunos campos de metadatos, el resto de los cuales se utilizan para exponer el &lt;a href=&quot;https://joelibaceta.github.io/graphql-guide-spanish/aprender/introspeccion&quot;&gt;sistema de introspección&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;a href=&quot;https://joelibaceta.github.io/graphql-guide-spanish/aprender/schemas-and-types&quot;&gt;Seguir leyendo -&amp;gt; Esquemas y Tipos &lt;/a&gt;&lt;/p&gt;
