@@ -564,6 +564,92 @@
 
 <p>Esto significa que si enviamos dos mutaciones <code class="highlighter-rouge">incrementCredits</code> en una solicitud, se garantiza que la primera finalice antes de que comience la segunda, asegurando que no terminemos con una de carrera entre ellas.</p>
 
+<h2 id="fragmentos-en-linea">Fragmentos en linea</h2>
+
+<p>Al igual que muchos otros sistemas de tipos, los esquemas GraphQL incluyen la capacidad de definir interfaces y tipos de unión. <a href="https://joelibaceta.github.io/graphql-guide-spanish/aprender/schemas-and-types">Aprende sobre ellos en la guía de esquemas.</a></p>
+
+<p>Si está consultando un campo que devuelve una interfaz o un tipo de unión, deberá utilizar un <em>fragmento en línea</em> para acceder a los datos en el tipo concreto subyacente. Es más fácil de ver con un ejemplo:</p>
+
+<div class="language-graphql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">query</span><span class="w"> </span><span class="n">HeroForEpisode</span><span class="p">(</span><span class="nv">$ep</span><span class="p">:</span><span class="w"> </span><span class="n">Episode</span><span class="p">!)</span><span class="w"> </span><span class="p">{</span><span class="w">
+  </span><span class="n">hero</span><span class="p">(</span><span class="n">episode</span><span class="p">:</span><span class="w"> </span><span class="nv">$ep</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">name</span><span class="w">
+    </span><span class="p">...</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">Droid</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">primaryFunction</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+    </span><span class="p">...</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">Human</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">height</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Variables</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"ep"</span><span class="p">:</span><span class="w"> </span><span class="s2">"JEDI"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Resultado</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"hero"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"R2-D2"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"primaryFunction"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Astromech"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>En esta consulta, el campo <code class="highlighter-rouge">hero</code> devuelve el tipo de <code class="highlighter-rouge">Character</code>, que puede ser un humano (<code class="highlighter-rouge">Human</code>) o un androide (<code class="highlighter-rouge">Droid</code>) según el argumento <code class="highlighter-rouge">episodio</code>. En la selección directa, solo puede solicitar campos que existen en la interfaz <code class="highlighter-rouge">Character</code>, como el nombre (<code class="highlighter-rouge">name</code>).</p>
+
+<p>Para solicitar un campo en el tipo concreto, debe utilizar un <em>fragmento en línea</em> con una condición de tipo. Debido a que el primer fragmento está etiquetado como <code class="highlighter-rouge">... on Droid</code>, el campo <code class="highlighter-rouge">primaryFunction</code> solo se ejecutará si el Personaje (<code class="highlighter-rouge">Character</code>) devuelto por el héroe (<code class="highlighter-rouge">hero</code>) es del tipo androide (<code class="highlighter-rouge">Droid</code>). Del mismo modo para el campo de <code class="highlighter-rouge">height</code> para el tipo <code class="highlighter-rouge">Human</code>.</p>
+
+<p>Los fragmentos con nombre también se pueden usar de la misma manera, ya que un fragmento con nombre siempre tiene un tipo adjunto.</p>
+
+<h3 id="meta-campos">Meta campos</h3>
+
+<p>Dado que hay algunas situaciones en las que no sabe qué tipo se recibirá del servicio GraphQL, se necesita alguna forma de determinar cómo manejar esos datos en el cliente. GraphQL le permite solicitar el campo <code class="highlighter-rouge">__typename</code>, un meta campo, en cualquier punto de una consulta para obtener el nombre del tipo del objeto en ese punto.</p>
+
+<div class="language-graphql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="n">search</span><span class="p">(</span><span class="n">text</span><span class="p">:</span><span class="w"> </span><span class="s2">"an"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="n">__typename</span><span class="w">
+    </span><span class="p">...</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">Human</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">name</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+    </span><span class="p">...</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">Droid</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">name</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+    </span><span class="p">...</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">Starship</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="n">name</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>Resultado</p>
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"search"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"__typename"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Human"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Han Solo"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"__typename"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Human"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Leia Organa"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"__typename"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Starship"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"TIE Advanced x1"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+<p>En la consulta anterior, la búsqueda devuelve un tipo de unión que puede ser una de las tres opciones. Sería imposible distinguir los diferentes tipos del cliente sin el campo <code class="highlighter-rouge">__typename</code>.</p>
+
+<p>Los servicios GraphQL proporcionan algunos campos de metadatos, el resto de los cuales se utilizan para exponer el <a href="https://joelibaceta.github.io/graphql-guide-spanish/aprender/introspeccion">sistema de introspección</a>.</p>
+
+<blockquote>
+  <p><a href="https://joelibaceta.github.io/graphql-guide-spanish/aprender/schemas-and-types">Seguir leyendo -&gt; Esquemas y Tipos </a></p>
+</blockquote>
+
   </div><a class="u-url" href="/graphql-guide-spanish/aprender/queries-and-mutations" hidden></a>
 </article>
 
