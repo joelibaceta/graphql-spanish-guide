@@ -45,7 +45,11 @@ Encontramos un par de propiedades:
 
 ## ¿Como Contribuir?
 
-1. En la seccion [issues](https://github.com/joelibaceta/graphql-guide-spanish/issues), encontraras una lista de tareas pendientes en las que puedes colaborar, dejanos un comentario para mostrarnos tu intencion de tomar la tarea o parte de ella y seras asignado al issue correspondiente.
-2. Haz un fork del proyecto para tener tu propia copia.
-3. Una vez terminado el trabajo, debes enviar un Pull Request con la descripcion del trabajo realizado para su revision.
+1. En la seccion [issues](https://github.com/joelibaceta/graphql-guide-spanish/issues), encontraras una lista de tareas pendientes en las que puedes colaborar, dejanos un comentario para mostrarnos tu intencion de tomar la tarea o parte de ella y seras asignado al `issue` correspondiente.
+2. Haz un `fork` del proyecto para tener tu propia copia.
+3. Una vez terminado el trabajo, debes enviar un `Pull Request` con la descripcion del trabajo realizado para su revision.
 4. Cuando la revision se ha terminado, esta sera añadida a la rama principal y gracias a la automatizacion del proyecto, se publicara de forma inmediata en la pagina publica de proyecto.
+
+## Tengo una idea o sugerencia
+
+Crea un issue con tu idea o sugerencia para poder llevarla adelante.
