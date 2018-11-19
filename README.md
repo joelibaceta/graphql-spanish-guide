@@ -50,6 +50,31 @@ Encontramos un par de propiedades:
 3. Una vez terminado el trabajo, debes enviar un `Pull Request` con la descripcion del trabajo realizado para su revision.
 4. Cuando la revision se ha terminado, esta sera añadida a la rama principal y gracias a la automatizacion del proyecto, se publicara de forma inmediata en la pagina publica de proyecto.
 
+## ¿Como ejecutar una copia local?
+
+El proyecto tiene 2 componentes, una gema personalizada para el tema y el proyecto jekyll local.
+
+### Pre requisitos
+
+- rvm o similar
+- Ruby 2.3 o superior
+
+Para instalar el entorno de desarrollo ejecutar 
+
+```
+bundle install
+```
+
+y luego para iniciar el proyecto 
+
+```
+jekyll serve
+```
+
+Podras visualizar el sitio en la url local `http://127.0.0.1:4000/`
+
+
 ## Tengo una idea o sugerencia
 
 Crea un issue con tu idea o sugerencia para poder llevarla adelante.
+
