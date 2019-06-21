@@ -76,5 +76,4 @@ Podras visualizar el sitio en la url local `http://127.0.0.1:4000/`
 
 ## Tengo una idea o sugerencia
 
-Crea un issue con tu idea o sugerencia para poder llevarla adelante.
-
+[Crea un issue](https://github.com/joelibaceta/graphql-spanish-guide/issues) con tu idea o sugerencia 
