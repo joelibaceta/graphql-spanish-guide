@@ -14,7 +14,7 @@ rm -rf _site
 mkdir _site
 
 # clone remote repo to "_site"
-git clone https://${ENV_GITHUB_TOKEN}@github.com/joelibaceta/graphql-guide-spanish.git --branch gh-pages _site
+git clone https://${ENV_GITHUB_TOKEN}@github.com/joelibaceta/graphql-spanish-guide.git --branch gh-pages _site
 
 bundle exec jekyll build --baseurl "graphql-guide-spanish/"
 
